@@ -1,0 +1,6 @@
+[Unit]
+Description=Update VSCode KDE jump list
+
+[Service]
+Type=oneshot
+ExecStart=python3 %h/.local/bin/update-vscode-jumplist.py
