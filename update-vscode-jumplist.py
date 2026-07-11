@@ -40,8 +40,21 @@ SYSTEM_DESKTOP = next((p for p in _SYSTEM_DESKTOP_CANDIDATES if p.exists()), Non
 
 
 def workspace_mtime(uri: str) -> float:
-    """Return mtime of the workspace storage dir, or 0.0 if not found."""
-    h = hashlib.md5(uri.encode()).hexdigest()
+    """Return mtime of the workspace storage dir, or 0.0 if not found.
+
+    VSCode computes the storage dir name differently by URI scheme:
+    - file://  (local): md5(fsPath + str(inode))  — inode makes it Linux-specific
+    - anything else:    md5(uri)
+    """
+    if uri.startswith('file://'):
+        fspath = unquote(uri[len('file://'):])
+        try:
+            ino = os.stat(fspath).st_ino
+        except OSError:
+            return 0.0
+        h = hashlib.md5((fspath + str(ino)).encode()).hexdigest()
+    else:
+        h = hashlib.md5(uri.encode()).hexdigest()
     try:
         return (WS_STORAGE / h).stat().st_mtime
     except OSError:
