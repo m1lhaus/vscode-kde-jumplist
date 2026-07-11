@@ -8,6 +8,8 @@ KDE's taskbar jump list (right-click on a pinned icon) shows recent documents fo
 
 This tool works around that by reading VSCode's own internal workspace history (`~/.config/Code/User/globalStorage/storage.json`) and generating a local `.desktop` file override with your recent workspaces as static [Desktop Actions](https://specifications.freedesktop.org/desktop-entry-spec/latest/ar01s11.html). It handles local folders and SSH remotes.
 
+<img src="screenshot.png"  style="max-width: 300px; width: 100%; display: block; margin: 0 auto;">
+
 ## Requirements
 
 - KDE Plasma 5 or 6
