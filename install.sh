@@ -35,5 +35,5 @@ systemctl --user enable --now vscode-jumplist.timer
 python3 "$BIN_DIR/update-vscode-jumplist.py"
 
 echo
-echo "Installed. The jump list will refresh every 60 seconds automatically."
+echo "Installed. The jump list will refresh periodically based on vscode-jumplist.timer config automatically."
 echo "To uninstall, run: ./uninstall.sh"
