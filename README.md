@@ -19,7 +19,7 @@ This tool works around that by reading VSCode's own internal workspace history (
 ## Install
 
 ```bash
-git clone https://github.com/youruser/vscode-kde-jumplist
+git clone https://github.com/m1lhaus/vscode-kde-jumplist.git
 cd vscode-kde-jumplist
 ./install.sh
 ```
