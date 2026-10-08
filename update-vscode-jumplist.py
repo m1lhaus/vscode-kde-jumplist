@@ -31,7 +31,9 @@ LOCAL_DESKTOP = HOME / '.local/share/applications/code.desktop'
 # A single ~/.local/share/applications/code.desktop shadows all of these per
 # the XDG spec, so we only ever need to write one local override file.
 _SYSTEM_DESKTOP_CANDIDATES = [
+    Path('/usr/share/applications/com.microsoft.VSCode.desktop'),
     Path('/usr/share/applications/code.desktop'),
+    Path('/usr/local/share/applications/com.microsoft.VSCode.desktop'),
     Path('/usr/local/share/applications/code.desktop'),
 ]
 SYSTEM_DESKTOP = next((p for p in _SYSTEM_DESKTOP_CANDIDATES if p.exists()), None)

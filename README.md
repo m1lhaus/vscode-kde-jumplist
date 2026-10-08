@@ -13,7 +13,7 @@ This tool works around that by reading VSCode's own internal workspace history (
 ## Requirements
 
 - KDE Plasma 5 or 6
-- VSCode installed via package manager (`/usr/share/applications/code.desktop` or `/usr/local/share/applications/code.desktop`)
+- VSCode installed via package manager (`code.desktop` or `com.microsoft.VSCode.desktop` in paths `/usr/share/applications` or `/usr/local/share/applications`)
 - Python 3.9+
 
 ## Install

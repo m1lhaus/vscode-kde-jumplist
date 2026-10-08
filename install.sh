@@ -14,7 +14,9 @@ if ! command -v python3 &>/dev/null; then
     exit 1
 fi
 
-if [[ ! -f /usr/share/applications/code.desktop && \
+if [[ ! -f /usr/share/applications/com.microsoft.VSCode.desktop && \
+      ! -f /usr/share/applications/code.desktop && \
+      ! -f /usr/local/share/applications/com.microsoft.VSCode.desktop && \
       ! -f /usr/local/share/applications/code.desktop ]]; then
     echo "Error: VSCode does not appear to be installed (no code.desktop found)." >&2
     exit 1
