@@ -23,7 +23,7 @@ MAX_ENTRIES = 10  # how many recent workspaces to include in the jump list
 HOME = Path.home()
 STORAGE_JSON = HOME / '.config/Code/User/globalStorage/storage.json'
 WS_STORAGE = HOME / '.config/Code/User/workspaceStorage'
-LOCAL_DESKTOP = HOME / '.local/share/applications/code.desktop'
+LOCAL_DESKTOP_FOLDERPATH = HOME / '.local/share/applications'
 
 # Standard install locations for the system VSCode desktop file.
 # /usr/share       — package manager installs (dnf, apt, …)
@@ -190,23 +190,42 @@ def main():
     content = build_desktop(recent, base_text)
 
     # Atomic write: write to a temp file in the same directory, then rename.
-    LOCAL_DESKTOP.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        fd, tmp_path = tempfile.mkstemp(dir=LOCAL_DESKTOP.parent, suffix='.desktop.tmp')
-        try:
-            with os.fdopen(fd, 'w', encoding='utf-8') as f:
-                f.write(content)
-            os.replace(tmp_path, LOCAL_DESKTOP)
-        except Exception:
-            os.unlink(tmp_path)
-            raise
-    except OSError as e:
-        print(f'Error: could not write {LOCAL_DESKTOP}: {e}', file=sys.stderr)
-        sys.exit(1)
+    LOCAL_DESKTOP_FOLDERPATH.mkdir(parents=True, exist_ok=True)
 
-    print(f'\nWrote {LOCAL_DESKTOP}')
-    subprocess.run(['update-desktop-database', str(LOCAL_DESKTOP.parent)],
-                   capture_output=True)
+    all_desktop_filenames = list(dict.fromkeys(p.name for p in _SYSTEM_DESKTOP_CANDIDATES))
+    available_desktop_filenames = list(dict.fromkeys(p.name for p in _SYSTEM_DESKTOP_CANDIDATES if p.exists()))
+
+    for desktop_filename in all_desktop_filenames:
+        desktop_filepath = LOCAL_DESKTOP_FOLDERPATH / desktop_filename
+        
+        # remove not used local version of VSCode .desktop file
+        if desktop_filename not in available_desktop_filenames:
+            if desktop_filepath.exists():
+                print(f'Warning: {desktop_filename} filename is not used anymore. Removing file {desktop_filepath}.', file=sys.stderr)
+                try:
+                    os.remove(desktop_filepath)
+                except OSError as e:
+                    import traceback
+                    print(f'Error: could not remove {desktop_filepath}: {traceback.format_exc()}', file=sys.stderr)
+                continue
+
+        try:
+            fd, tmp_path = tempfile.mkstemp(dir=LOCAL_DESKTOP_FOLDERPATH, suffix='.desktop.tmp')
+            try:
+                with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                os.replace(tmp_path, desktop_filepath)
+            except Exception:
+                os.unlink(tmp_path)
+                raise
+        except OSError as e:
+            print(f'Error: could not write {desktop_filepath}: {e}', file=sys.stderr)
+            sys.exit(1)
+
+        print(f'\nWrote {desktop_filepath}')
+    
+    subprocess.run(['update-desktop-database', str(LOCAL_DESKTOP_FOLDERPATH)],
+                    capture_output=True)
     print('Done. Right-click the VSCode taskbar icon to see the jump list.')
 
 
